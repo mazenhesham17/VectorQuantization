@@ -1,5 +1,6 @@
 import numpy as np
 
+
 # read data from file and parse it
 def read_data(name):
     file = open(name)
@@ -16,24 +17,25 @@ def read_data(name):
         if not string:
             break
         string = string[1:-2]
-        lst = list(map(int,string.split(',')))
+        lst = list(map(int, string.split(',')))
         labels.append(lst)
     file.close()
-    return codebooks,labels
+    return codebooks, labels
+
 
 # combine the vectors into one image
-def construct_image(codebook,labels):
-    image , row = np.array([]), np.array([])
+def construct_image(codebook, labels):
+    image, row = np.array([]), np.array([])
     height = len(labels)
     for i in range(height):
         width = len(labels[i])
         for j in range(width):
-            if j :
-                row = np.concatenate((row,codebook[labels[i][j]]),axis=1)
+            if j:
+                row = np.concatenate((row, codebook[labels[i][j]]), axis=1)
             else:
                 row = codebook[labels[i][j]]
-        if i :
-            image = np.concatenate((image,row))
+        if i:
+            image = np.concatenate((image, row))
         else:
             image = np.array(row)
     return image
