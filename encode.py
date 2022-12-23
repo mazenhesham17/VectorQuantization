@@ -3,7 +3,7 @@ import numpy as np
 
 # make 2d array with no shallow copy
 def make_2d(n, m):
-    arr = [[0 for j in range(m)] for i in range(n)]
+    arr = [[0 for _ in range(m)] for _ in range(n)]
     return arr
 
 
@@ -35,32 +35,33 @@ def get_mean(vectors, n, m):
     return mean
 
 
-# for each vector determine the nearst vector for it
+# for each vector determine the nearst vector in the codebook
 def assign_vectors(vectors, codebooks, n, m):
     dic = {}
     for vector in vectors:
-        min_dist = 10 ** 8
-        target_idx = 0
-        idx = 0
+        minimum_distance = 10 ** 8
+        minimum_index = 0
+        index = 0
         for codebook in codebooks:
-            dist = 0
+            distance = 0
             for i in range(n):
                 for j in range(m):
-                    dist += abs(vector[i][j] - codebook[i][j])
+                    distance += abs(vector[i][j] - codebook[i][j])
             # minimize the total distance
-            if min_dist > dist:
-                min_dist = dist
-                target_idx = idx
-            idx += 1
+            if minimum_distance > distance:
+                minimum_distance = distance
+                minimum_index = index
+            index += 1
+        # store the vector as a string in dictionary
         temp = vector.tolist()
-        dic[str(temp) + '\n'] = target_idx
+        dic[str(temp) + '\n'] = minimum_index
     return dic
 
 
-# calculate the mean for every group
+# calculate the mean for each group
 def get_codebook_mean(vectors, codebooks, n, m):
     dic = assign_vectors(vectors, codebooks, n, m)
-    arr = [[] for i in range(len(codebooks))]
+    arr = [[] for _ in range(len(codebooks))]
     # separate the vectors by the codebook
     for item in dic:
         array = np.array(eval(item))
@@ -72,32 +73,32 @@ def get_codebook_mean(vectors, codebooks, n, m):
     return lst
 
 
-# get means of the new codebooks
+# get mean of the new codebook
 def split_mean(mean, n, m):
     left, right = make_2d(n, m), make_2d(n, m)
     for i in range(n):
         for j in range(m):
-            num = mean[i][j]
-            if num.is_integer():
-                left[i][j] = num - 1
-                right[i][j] = num + 1
+            value = mean[i][j]
+            if value.is_integer():
+                left[i][j] = value - 1
+                right[i][j] = value + 1
             else:
-                left[i][j] = int(num)
-                right[i][j] = int(num) + 1
+                left[i][j] = int(value)
+                right[i][j] = int(value) + 1
     return left, right
 
 
-# create codebook with the required numbers of bit
+# create codebook with the required numbers of bits for the label
 def make_codebook(vectors, n, m, label_size):
     codebooks = [make_2d(n, m)]
     for i in range(label_size):
         means = get_codebook_mean(vectors, codebooks, n, m)
-        new_codebook = []
+        new_codebooks = []
         for mean in means:
             left, right = split_mean(mean, n, m)
-            new_codebook.append(left)
-            new_codebook.append(right)
-        codebooks = new_codebook
+            new_codebooks.append(left)
+            new_codebooks.append(right)
+        codebooks = new_codebooks
     return codebooks
 
 
@@ -110,21 +111,9 @@ def get_compressed(vectors, codebooks, n, m, width):
         if i % step == 0 and i:
             lst.append(sub_lst)
             sub_lst = []
-        # store the vector as a string in dictionary
+        # get the vector from the dictionary as a string
         temp = vectors[i].tolist()
         sub_lst.append(dic.get(str(temp) + '\n'))
     if len(sub_lst):
         lst.append(sub_lst)
     return lst
-
-
-# write the codebook and labels to file
-def store_data(name, compressed_image, codebooks):
-    file = open(name, 'w')
-    file.write(str(len(codebooks)) + '\n')
-    for codebook in codebooks:
-        file.write(str(codebook) + '\n')
-    file.write('Compressed image\n')
-    for row in compressed_image:
-        file.write(str(row) + '\n')
-    file.close()
