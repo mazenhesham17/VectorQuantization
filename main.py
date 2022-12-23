@@ -56,7 +56,8 @@ image_frame.pack(anchor='w', pady=5)
 
 
 def get_path():
-    root.filename = filedialog.askopenfilename(initialdir='\images')
+    root.filename = filedialog.askopenfilename(initialdir='\images', title="Select an image", filetypes=(
+        ("jpg images", "*.jpg"), ("png images", "*.png"), ("jpeg images", "*.jpeg")))
     dimensions = np.asarray(Image.open(root.filename).convert('L')).shape
     image_name.set(root.filename.split('/')[-1] + ' ' + str(dimensions))
 
@@ -95,17 +96,11 @@ def compress():
     original = ImageTk.PhotoImage(Image.open(image_path))
     compressed = ImageTk.PhotoImage(Image.open(save_path))
 
-    # frame for the original image
-    original_frame = tk.Frame(top)
-    tk.Label(original_frame, image=original).pack(pady=10, padx=5)
-    tk.Label(original_frame, text='Original Image', font=('Arial', 14)).pack(pady=10, padx=5)
+    tk.Label(top, image=original, text='Original Image', compound='top', font=('Arial', 14)).grid(row=0, column=0,
+                                                                                                  pady=5, padx=5)
 
-    # frame for the compressed image
-    compressed_frame = tk.Frame(top)
-    tk.Label(original_frame, image=compressed).pack(pady=10, padx=5)
-    tk.Label(original_frame, text='Compressed Image', font=('Arial', 14)).pack(pady=10, padx=5)
-    original_frame.pack(side=tk.LEFT, padx=5, pady=5)
-    compressed_frame.pack(side=tk.LEFT, padx=5, pady=5)
+    tk.Label(top, image=compressed, text='Compressed Image', compound='top', font=('Arial', 14)).grid(row=0, column=1,
+                                                                                                      pady=5, padx=5)
 
 
 tk.Button(text="compress", font=('Arial', 14), bg='#1aff1a', fg='#ffffff', borderwidth=0, command=compress).pack(
