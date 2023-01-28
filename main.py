@@ -56,7 +56,7 @@ image_frame.pack(anchor='w', pady=5)
 
 
 def get_path():
-    root.filename = filedialog.askopenfilename(initialdir='\images', title="Select an image", filetypes=(
+    root.filename = filedialog.askopenfilename(initialdir='images', title="Select an image", filetypes=(
         ("jpg images", "*.jpg"), ("png images", "*.png"), ("jpeg images", "*.jpeg")))
     dimensions = np.asarray(Image.open(root.filename).convert('L')).shape
     image_name.set(root.filename.split('/')[-1] + ' ' + str(dimensions))
