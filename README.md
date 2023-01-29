@@ -25,6 +25,7 @@ To select an image, click the "select an image" button; the Images folder is the
 ![second](https://user-images.githubusercontent.com/99297095/215297557-7c1bd0c9-dbab-49f7-939d-df182b4b1c94.png)
 
 Then you need to choose the vector size and the codebook label size in bits, which means if we enter 5, the codebook size will be 32 vector.
+
 Note that you need to choose the dimensions of the vector as a divisor of the original image dimensions; otherwise, it will show you an error message. 
 
 ![third](https://user-images.githubusercontent.com/99297095/215297662-ba0065e3-ce04-48bf-b05b-e40774311dfc.png)
