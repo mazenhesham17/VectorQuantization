@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import messagebox
 
 from PIL import ImageTk, Image
 
@@ -77,7 +78,16 @@ def compress():
     image = Image.open(image_path).convert("L")
     image_array = np.asarray(image)
 
-    # compress the image
+    # check if the dimensions valid
+    if n < 1 or m < 1:
+        messagebox.showerror("Error", "Error : You need to enter positive dimensions.")
+        return
+
+    if image_array.shape[0] % n or image_array.shape[1] % m:
+        messagebox.showerror("Error", "Error : You need to enter divisible dimensions.")
+        return
+
+        # compress the image
     vectors = splitter(image_array, n, m)
     codebooks = make_codebook(vectors, n, m, label_size)
     compressed_image = get_compressed(vectors, codebooks, n, m, image_array.shape[1])
